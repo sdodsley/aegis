@@ -25,6 +25,7 @@
       set_fact:
         source_array: "{{ os_volume_info.volumes[0].metadata.array_name }}"
         volume_name: "{{ os_volume_info.volumes[0].metadata.array_volume_name.split(':')[-1] }}"
+        source_image_meta: "{{ os_volume_info.volumes[0].volume_image_metadata | default({}) }}""
 
     - name: Set the PG snapshot volume name
       set_fact:
@@ -102,6 +103,32 @@
         host: "{{ target_host }}"
         name: "{{ target_os_volume_name }}"
       register: cinder_vol
+
+    - name: Apply volume image metadata via openstacksdk
+      ansible.builtin.command: python3 -
+      args:
+        stdin: |
+          from openstack import connection
+          import sys
+
+          cloud = "{{ target_openstack_cloud }}"
+          volume_id = "{{ cinder_vol.volume.id }}"
+          image_meta = {{ source_image_meta | to_json }}
+
+          if not image_meta:
+              print("No volume image metadata to apply")
+              sys.exit(0)
+
+          conn = connection.from_config(cloud=cloud)
+
+          # This maps to Cinder os-set_image_metadata
+          conn.block_storage.set_volume_image_metadata(
+              volume_id,
+              **image_meta
+          )
+
+          print(f"Applied volume image metadata to {volume_id}: {image_meta}")
+      changed_when: source_image_meta | length > 0
 
     - name: Boot instance from managed volume
       openstack.cloud.server:

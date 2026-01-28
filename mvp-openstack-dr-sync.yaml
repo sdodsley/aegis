@@ -24,8 +24,7 @@ i# -----------------------------------------------------------------------------
 
     - name: Extract volume image metadata from source volume
       set_fact:
-        source_image_meta: >-
-          {{ source_vol.volumes[0].volume_image_metadata | default({}) }}
+        source_image_meta: "{{ source_vol.volumes[0].volume_image_metadata | default({}) }}"
 
     - name: Define name for cloned volume
       set_fact:

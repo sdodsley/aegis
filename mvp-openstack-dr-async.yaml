@@ -15,6 +15,26 @@
     target_os_volume_name: <name of boot volume on target os cloud>
     bootable: True | False
   tasks:
+    - name: Preflight - validate required DR inputs
+      ansible.builtin.assert:
+        that:
+          - source_openstack_cloud is string
+          - source_openstack_cloud | length > 0
+          - target_openstack_cloud is string
+          - target_openstack_cloud | length > 0
+          - fa_url is string
+          - fa_url | length > 0
+          - fa_api_token is string
+          - fa_api_token | length > 0
+          - os_volume_name is string
+          - os_volume_name | length > 0
+          - target_os_volume_name is string
+          - target_os_volume_name | length > 0
+        fail_msg: >-
+          Missing required input. Ensure source_openstack_cloud,
+          target_openstack_cloud, fa_url, fa_api_token, os_volume_name,
+          and target_os_volume_name are set.
+
     - name: Get Cinder volume details
       openstack.cloud.volume_info:
         cloud: "{{ source_openstack_cloud }}"

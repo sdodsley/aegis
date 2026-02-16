@@ -81,3 +81,7 @@ The second cloud's volume types should be used as necessary in the `volume_manag
 ## Additional work 
 Included is an Ansible playbook that will interrogate all Nova instances in a cloud and detail their configuration and describe the clouds netowrk topology and security groups.
 This can be used as a starting point for deeper enhancements where Ansible can be used to recreate a cloud's configuration on a remote site.
+
+## Enhancement roadmap
+
+Recommended next-step improvements for reliability, observability, security, reusability, and CI validation are documented in [`workflow-playbook-enhancements.md`](workflow-playbook-enhancements.md).

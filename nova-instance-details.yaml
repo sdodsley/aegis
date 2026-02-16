@@ -6,7 +6,7 @@
     region_name: null
     detailed: true
     filters: {}
-    tenant: my_tenant_name
+    tenant_name: my_tenant_name
     instance_name: null
     collect_guest_facts: false
     ssh_user: ubuntu
@@ -16,6 +16,13 @@
     ssh_wait_timeout: 60
 
   tasks:
+    - name: Preflight - ensure tenant name was provided
+      ansible.builtin.assert:
+        that:
+          - tenant_name is string
+          - tenant_name | length > 0
+        fail_msg: "Set tenant_name to a valid OpenStack project before running this playbook."
+
     - name: Query server (Nova) info from OpenStack for a specific tenant
       openstack.cloud.server_info:
         cloud: "{{ cloud_name }}"
@@ -27,7 +34,7 @@
       register: server_info
       failed_when: server_info is failed
 
-    - name: Set fact: instance_metadata
+    - name: "Set fact: instance_metadata"
       set_fact:
         instance_metadata: "{{ server_info.servers | default([]) }}"
 

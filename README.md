@@ -14,8 +14,6 @@ The playbook requires that `clouds.yaml` has authentication details for both sou
 Asynchronous replication does not require the source Nova instances to be shutdown when the DR is performed.
 Synchronous replication requires that the Nova instances be quiesed before performing the DR.
 
-**NOTE:** The `volume_manage` module is not currently upstream. Details of the actual code are available here: https://review.opendev.org/c/openstack/ansible-collections-openstack/+/947517
-
 Under current upstream cinder code replication failover is per backend, so it cannot be used for per tenant or per application failover.
 
 To enable something that would effectively enable these scripts to work on a per tenant or application basis the following methodology should be performed, based on a single physical FlashArray connected to the source OS cloud, replicated to another FlashArray connected to a second OS cloud
